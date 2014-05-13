@@ -40,6 +40,9 @@ def start():
                         default=False,
                         action='store_true',
                         help='Ignore users without contributions')
+    parser.add_argument('--start-date',
+                        help='Ignore contributions before this date, in '
+                             'CCYY-MM-DD format')
     parser.add_argument('orgs', nargs='+', help='organization name(s)')
     args = parser.parse_args()
 
@@ -48,4 +51,5 @@ def start():
         sys.exit(1)
 
     github.weekly_organization_stats(args.orgs, args.user, args.password,
-                                     args.ignore_inactive_users)
+                                     args.ignore_inactive_users,
+                                     args.start_date)

@@ -5,5 +5,5 @@
 # (Note the relative directory, must run pip from the correct relative directory.)
 #-e ./
 #
-
+arrow>=0.4.2
 bottle>=0.12.5

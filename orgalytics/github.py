@@ -12,16 +12,21 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import datetime
-
+import arrow
 import github3
 
 
 def weekly_organization_stats(organization_names, user, password,
-                              ignore_inactive_users=False):
+                              ignore_inactive_users=False,
+                              start_date=None):
     """Print weekly summary data for all repos in organizations."""
     github_client = github3.login(user, password=password)
     weeks = {}
+
+    ignore_before = None
+    if start_date and len(start_date) == 10:
+        ignore_before = arrow.get(start_date)
+
     for organization_name in organization_names:
         organization = github_client.organization(organization_name)
 
@@ -43,8 +48,12 @@ def weekly_organization_stats(organization_names, user, password,
                         weeks[week][user]['d'] += week_data['d']
 
     for week in sorted(weeks.keys()):
-        week_timestamp = datetime.datetime.fromtimestamp(week)
-        print("\nWeek beginning %s" % week_timestamp)
+
+        week_timestamp = arrow.get(week)
+        if ignore_before and week_timestamp < ignore_before:
+            continue
+
+        print("\nWeek beginning %s" % week_timestamp.format('YYYY-MM-DD'))
         for user in sorted(weeks[week].keys()):
             user_data = weeks[week][user]
             contributions = [user_data['c'], user_data['a'], user_data['d']]
