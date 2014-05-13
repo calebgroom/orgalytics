@@ -45,7 +45,7 @@ def weekly_organization_stats(organization_names, user, password):
         week_timestamp = datetime.datetime.fromtimestamp(week)
         print("\nWeek beginning %s" % week_timestamp)
         for user in sorted(weeks[week].keys()):
-            row_format = "    {:<15}      {} commits (+{}, -{})"
+            row_format = "    {:<20}      {} commits (+{}, -{})"
             user_data = weeks[week][user]
             print row_format.format(
                 user, user_data['c'], user_data['a'], user_data['d'])

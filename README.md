@@ -4,7 +4,6 @@
 
 ```
  $ orgalytics --user your_github_user --password fluffy org1 org2
- 
 ```
 
 ## Install
