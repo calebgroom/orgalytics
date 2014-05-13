@@ -35,6 +35,11 @@ def start():
     parser.add_argument('--password', '-p',
                         default=os.environ.get('GITHUB_PASSWORD'),
                         help='Github password')
+    parser.add_argument('--ignore-inactive-users',
+                        dest='ignore_inactive_users',
+                        default=False,
+                        action='store_true',
+                        help='Ignore users without contributions')
     parser.add_argument('orgs', nargs='+', help='organization name(s)')
     args = parser.parse_args()
 
@@ -42,4 +47,5 @@ def start():
         print("Github username and password required.")
         sys.exit(1)
 
-    github.weekly_organization_stats(args.orgs, args.user, args.password)
+    github.weekly_organization_stats(args.orgs, args.user, args.password,
+                                     args.ignore_inactive_users)

@@ -17,7 +17,8 @@ import datetime
 import github3
 
 
-def weekly_organization_stats(organization_names, user, password):
+def weekly_organization_stats(organization_names, user, password,
+                              ignore_inactive_users=False):
     """Print weekly summary data for all repos in organizations."""
     github_client = github3.login(user, password=password)
     weeks = {}
@@ -45,7 +46,12 @@ def weekly_organization_stats(organization_names, user, password):
         week_timestamp = datetime.datetime.fromtimestamp(week)
         print("\nWeek beginning %s" % week_timestamp)
         for user in sorted(weeks[week].keys()):
-            row_format = "    {:<20}      {} commits (+{}, -{})"
             user_data = weeks[week][user]
+            contributions = [user_data['c'], user_data['a'], user_data['d']]
+
+            if ignore_inactive_users and not any(contributions):
+                continue
+
+            row_format = "    {:<20}      {} commits (+{}, -{})"
             print row_format.format(
                 user, user_data['c'], user_data['a'], user_data['d'])
