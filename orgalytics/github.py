@@ -16,11 +16,14 @@ import arrow
 import github3
 
 
-def weekly_organization_stats(organization_names, user, password,
-                              ignore_inactive_users=False,
+def weekly_organization_stats(organization_names, user=None, password=None,
+                              oauth_token=None, ignore_inactive_users=False,
                               start_date=None):
     """Print weekly summary data for all repos in organizations."""
-    github_client = github3.login(user, password=password)
+    if oauth_token:
+        github_client = github3.login(token=oauth_token)
+    else:
+        github_client = github3.login(user, password=password)
     weeks = {}
 
     ignore_before = None

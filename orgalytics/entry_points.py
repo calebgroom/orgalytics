@@ -19,6 +19,8 @@ import logging
 import os
 import sys
 
+import keyring
+
 from orgalytics import github
 
 
@@ -35,6 +37,11 @@ def start():
     parser.add_argument('--password', '-p',
                         default=os.environ.get('GITHUB_PASSWORD'),
                         help='Github password')
+    parser.add_argument('--oauth-token', '-t',
+                        default=os.environ.get(
+                            'GITHUB_OATH_TOKEN',
+                            keyring.get_password('github', 'oauth_token')),
+                        help="Github OAuth Token")
     parser.add_argument('--ignore-inactive-users',
                         dest='ignore_inactive_users',
                         default=False,
@@ -46,10 +53,15 @@ def start():
     parser.add_argument('orgs', nargs='+', help='organization name(s)')
     args = parser.parse_args()
 
-    if not all([args.user, args.password]):
-        print("Github username and password required.")
+    if not args.oauth_token or all([args.user, args.password]):
+        print("Github OAuth token or username and password required.")
         sys.exit(1)
 
-    github.weekly_organization_stats(args.orgs, args.user, args.password,
-                                     args.ignore_inactive_users,
-                                     args.start_date)
+    github.weekly_organization_stats(
+        args.orgs,
+        user=args.user,
+        password=args.password,
+        oauth_token=args.oauth_token,
+        ignore_inactive_users=args.ignore_inactive_users,
+        start_date=args.start_date
+    )
